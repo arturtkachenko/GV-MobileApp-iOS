@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tSb-iE-1KR">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Gif_title-->
+        <scene sceneID="j83-PT-Ex8">
+            <objects>
+                <viewController id="tSb-iE-1KR" customClass="GifDetailsViewController" customModule="PicnicNext" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="x61-ET-KgS">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PUo-21-lVD">
+                                <rect key="frame" x="16" y="76" width="382" height="382"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="PUo-21-lVD" secondAttribute="height" multiplier="1:1" id="9Aa-fp-Mux"/>
+                                </constraints>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="okw-vH-x1k">
+                                <rect key="frame" x="16" y="474" width="40" height="35"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gif_title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tU5-f6-DvA">
+                                        <rect key="frame" x="0.0" y="0.0" width="40" height="13.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="link" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZTQ-47-oh5">
+                                        <rect key="frame" x="0.0" y="21.5" width="18.5" height="13.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="llw-wd-IY2">
+                                <rect key="frame" x="321.5" y="474" width="76.5" height="76.5"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="okw-vH-x1k" firstAttribute="top" secondItem="PUo-21-lVD" secondAttribute="bottom" constant="16" id="2dH-TX-KZz"/>
+                            <constraint firstItem="PUo-21-lVD" firstAttribute="top" secondItem="KCx-km-Fmv" secondAttribute="top" constant="32" id="69S-P5-ifA"/>
+                            <constraint firstItem="llw-wd-IY2" firstAttribute="trailing" secondItem="PUo-21-lVD" secondAttribute="trailing" id="CPD-No-I0J"/>
+                            <constraint firstItem="llw-wd-IY2" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="okw-vH-x1k" secondAttribute="trailing" constant="8" id="DUe-e0-SMV"/>
+                            <constraint firstItem="llw-wd-IY2" firstAttribute="height" secondItem="PUo-21-lVD" secondAttribute="height" multiplier="0.2" id="DYL-ay-Pkm"/>
+                            <constraint firstItem="llw-wd-IY2" firstAttribute="top" secondItem="okw-vH-x1k" secondAttribute="top" id="JzT-21-f5q"/>
+                            <constraint firstItem="PUo-21-lVD" firstAttribute="leading" secondItem="KCx-km-Fmv" secondAttribute="leading" constant="16" id="ZBz-Fb-sBv"/>
+                            <constraint firstItem="llw-wd-IY2" firstAttribute="width" secondItem="PUo-21-lVD" secondAttribute="width" multiplier="0.2" id="bQo-Fw-9hH"/>
+                            <constraint firstItem="okw-vH-x1k" firstAttribute="leading" secondItem="PUo-21-lVD" secondAttribute="leading" id="mXf-2o-kj2"/>
+                            <constraint firstItem="KCx-km-Fmv" firstAttribute="trailing" secondItem="PUo-21-lVD" secondAttribute="trailing" constant="16" id="qiB-as-ZmK"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="KCx-km-Fmv"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Gif_title" id="nlS-MK-3jg"/>
+                    <connections>
+                        <outlet property="ageRestrictionImageView" destination="llw-wd-IY2" id="zyh-73-ewd"/>
+                        <outlet property="gifImageView" destination="PUo-21-lVD" id="LwQ-9B-Xcd"/>
+                        <outlet property="gifLinkLabel" destination="ZTQ-47-oh5" id="abj-Oc-vmY"/>
+                        <outlet property="gifTitleLabel" destination="tU5-f6-DvA" id="YXd-PU-0oQ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nd7-EO-I1u" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2615.9420289855075" y="129.91071428571428"/>
+        </scene>
+    </scenes>
+</document>
