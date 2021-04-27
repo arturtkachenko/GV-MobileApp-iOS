@@ -10,7 +10,7 @@ import Foundation
 
 class BaseAssembly<ViewController: BaseViewController> {
     
-    class func createModule(_ viewModel: GifItemViewModel? = nil) -> ViewController {
-        return ViewController()
+    class func createModule(_ context: ContextProtocol? = nil) -> ViewController {
+        ViewController()
     }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol View: class { }
+protocol ViewProtocol: class {}
 
 class BaseViewController: UIViewController {
     
@@ -17,17 +17,7 @@ class BaseViewController: UIViewController {
         setupInterface()
     }
     
-    func setupInterface() { }
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
+    func setupInterface() {}
 }
 
-// MARK: - View
-
-extension BaseViewController: View { }
+extension BaseViewController: ViewProtocol { }

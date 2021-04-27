@@ -8,25 +8,35 @@
 
 import Foundation
 
-protocol GifDetailsInteractor: Interactor {
+// MARK: - Protocols
+
+protocol GifDetailsInteractorProtocol: InteractorProtocol {
     func fetchGifDetails()
 }
 
-final class GifDetailsInteractorImplementation: BaseInteractor {
+// MARK: - Implementation
+
+final class GifDetailsInteractor: BaseInteractor {
+    
+    // MARK: - Properties
     
     private let presenter: GifDetailsPresenter
-    private let viewModel: GifItemViewModel?
-
-    init(presenter: GifDetailsPresenter, viewModel: GifItemViewModel? = nil) {
+    private var context: GifDetailsContext?
+    
+    // MARK: - Initializers
+    
+    init(presenter: GifDetailsPresenter, context: GifDetailsContext? = nil) {
         self.presenter = presenter
-        self.viewModel = viewModel
+        self.context = context
     }
 }
 
-extension GifDetailsInteractorImplementation: GifDetailsInteractor {
+// MARK: - GifDetailsInteractorProtocol
+
+extension GifDetailsInteractor: GifDetailsInteractorProtocol {
     
     func fetchGifDetails() {
-        guard let viewModel = viewModel else { return }
-        presenter.presentGifDetails(viewModel)
+        guard let context = context else { return }
+        presenter.presentGifDetails(context.model)
     }
 }

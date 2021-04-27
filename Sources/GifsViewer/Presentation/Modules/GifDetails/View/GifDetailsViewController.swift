@@ -8,9 +8,13 @@
 
 import UIKit
 
-protocol GifDetailsView: View {
+// MARK: - Protocols
+
+protocol GifDetailsViewProtocol: ViewProtocol {
     func displayGifDetails(_ viewModel: GifItemViewModel)
 }
+
+// MARK: - Implementation
 
 final class GifDetailsViewController: BaseViewController {
     
@@ -25,25 +29,28 @@ final class GifDetailsViewController: BaseViewController {
     
     // MARK: - Lifecycle
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func setupInterface() {
+        super.setupInterface()
         interactor?.fetchGifDetails()
     }
 }
 
-extension GifDetailsViewController: GifDetailsView {
+// MARK: - GifDetailsViewProtocol
+
+extension GifDetailsViewController: GifDetailsViewProtocol {
     
     func displayGifDetails(_ viewModel: GifItemViewModel) {
         bind(viewModel: viewModel)
     }
 }
 
-extension GifDetailsViewController: ViewModelBindable {
+// MARK: - ViewModelBindableProtocol
+
+extension GifDetailsViewController: ViewModelBindableProtocol {
     
     typealias ViewModel = GifItemViewModel
     
     func bind(viewModel: GifItemViewModel) {
-        
         guard let gifUrl = URL(string: viewModel.gifUrl) else { return }
         gifImageView.setGif(from: gifUrl)
         

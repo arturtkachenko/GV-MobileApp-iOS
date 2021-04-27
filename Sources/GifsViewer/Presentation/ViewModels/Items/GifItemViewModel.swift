@@ -9,6 +9,7 @@
 import Foundation
 
 struct GifItemViewModel {
+    
     let gifTitle: String
     let gifUrl: String
     let gifImageUrl: String
@@ -17,7 +18,7 @@ struct GifItemViewModel {
 
 extension GifItemViewModel {
     
-    init(_ model: GifItemModel) {
+    init(model: GifItemModel) {
         gifTitle = model.title
         gifUrl = model.images.fixedWidth.url
         gifImageUrl = model.images.fixedWidthStill.url
