@@ -1,5 +1,5 @@
 //
-//  SizeCalculatable.swift
+//  SizeCalculatableProtocol.swift
 //  GifsViewer
 //
 //  Created by Artur Tkachenko on 1/31/20.
@@ -8,6 +8,7 @@
 
 import UIKit
 
-protocol SizeCalculatable: class {
+protocol SizeCalculatableProtocol: class {
+    
     static func estimatedSize(from containerSize: CGSize) -> CGSize
 }

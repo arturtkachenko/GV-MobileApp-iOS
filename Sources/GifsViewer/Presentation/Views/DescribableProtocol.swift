@@ -1,5 +1,5 @@
 //
-//  Describable.swift
+//  DescribableProtocol.swift
 //  GifsViewer
 //
 //  Created by Artur Tkachenko on 1/30/20.
@@ -8,15 +8,15 @@
 
 import UIKit
 
-protocol IndentifierDescribe {
+protocol IndentifierDescribeProtocol {
     static var identifier: String { get }
 }
 
-extension IndentifierDescribe {
+extension IndentifierDescribeProtocol {
     static var identifier: String { return .init(describing: self) }
 }
 
-protocol Describable: IndentifierDescribe {
+protocol DescribableProtocol: IndentifierDescribeProtocol {
 
     associatedtype SelfType
     
@@ -24,7 +24,7 @@ protocol Describable: IndentifierDescribe {
     static var viewFromNib: SelfType? { get }
 }
 
-extension Describable {
+extension DescribableProtocol {
 
     static var nib: UINib? {
         

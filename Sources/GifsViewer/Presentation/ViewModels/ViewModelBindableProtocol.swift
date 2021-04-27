@@ -1,5 +1,5 @@
 //
-//  ViewModelBindable.swift
+//  ViewModelBindableProtocol.swift
 //  GifsViewer
 //
 //  Created by Artur Tkachenko on 1/31/20.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol ViewModelBindable {
+protocol ViewModelBindableProtocol {
     
     associatedtype ViewModel
     

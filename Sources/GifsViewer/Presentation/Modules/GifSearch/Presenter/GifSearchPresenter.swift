@@ -8,42 +8,49 @@
 
 import Foundation
 
-protocol GifSearchPresenter: Presenter {
+// MARK: - Protocols
+
+protocol GifSearchPresenterProtocol: PresenterProtocol {
     
-    func presentGifDetailsModule(_ viewModel: GifItemViewModel)
     func presentRandomGif(_ model: GifItemModel)
-    func presentGifSearchResults(_ models: [GifItemModel])
+    func presentGifSearchResults(_ model: GifSearchScreenModel)
+    func presentGifDetailsModule(_ context: GifDetailsContext)
 }
 
-final class GifSearchPresenterImplementation: BasePresenter {
+// MARK: - Implementation
+
+final class GifSearchPresenter: BasePresenter {
     
-    private weak var view: GifSearchView?
+    // MARK: - Properties
     
-    init(router: Router, view: GifSearchView?) {
+    private weak var view: GifSearchViewProtocol?
+    
+    // MARK: - Initializers
+    
+    init(router: Router, view: GifSearchViewProtocol?) {
         super.init(router: router)
         self.view = view
     }
 }
 
-extension GifSearchPresenterImplementation: GifSearchPresenter {
+// MARK: - GifSearchPresenterProtocol
+
+extension GifSearchPresenter: GifSearchPresenterProtocol {
     
     func presentRandomGif(_ model: GifItemModel) {
-        let viewModel: GifItemViewModel = GifItemViewModel(model)
-        DispatchQueue.main.async {
-            self.view?.displayRandomGif(viewModel)
-        }
+        let viewModel = GifItemViewModel(model: model)
+        view?.displayRandomGif(viewModel)
     }
     
-    func presentGifSearchResults(_ models: [GifItemModel]) {
-        let viewModels: [GifItemViewModel] = models.compactMap {
-            GifItemViewModel($0)
+    func presentGifSearchResults(_ model: GifSearchScreenModel) {
+        let viewModels: [GifItemViewModel] = model.items.compactMap {
+            GifItemViewModel(model: $0)
         }
-        DispatchQueue.main.async {
-            self.view?.displayGifSearchResults(viewModels)
-        }
+        let screenViewModel = GifSearchScreenViewModel(items: viewModels, onSelectActionTriggered: model.onSelectActionTriggered)
+        view?.displayGifSearchResults(screenViewModel)
     }
     
-    func presentGifDetailsModule(_ viewModel: GifItemViewModel) {
-        router.push(GifDetailsAssembly.createModule(viewModel))
+    func presentGifDetailsModule(_ context: GifDetailsContext) {
+        router.push(GifDetailsAssembly.createModule(context))
     }
 }

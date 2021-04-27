@@ -11,13 +11,19 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
+    // MARK: - Properties
+    
     var window: UIWindow?
-
+    
+    // MARK: - General
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         setupAppearance()
         startFlow()
         return true
     }
+    
+    // MARK: - Helpers
     
     private func setupAppearance() {
         UINavigationBar.appearance().tintColor = .black

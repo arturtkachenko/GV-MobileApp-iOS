@@ -8,6 +8,8 @@
 
 import Foundation
 
+protocol PresenterProtocol {}
+
 class BasePresenter {
     
     let router: Router
@@ -17,4 +19,4 @@ class BasePresenter {
     }
 }
 
-extension BasePresenter: Presenter { }
+extension BasePresenter: PresenterProtocol {}

@@ -15,6 +15,7 @@ final class GifCollectionViewCell: UICollectionViewCell {
     private enum Layout {
         
         enum Space {
+            
             static let left: CGFloat = 8.0
             static let right: CGFloat = 8.0
         }
@@ -32,7 +33,9 @@ final class GifCollectionViewCell: UICollectionViewCell {
     }
 }
 
-extension GifCollectionViewCell: ViewModelBindable {
+// MARK: - ViewModelBindableProtocol
+
+extension GifCollectionViewCell: ViewModelBindableProtocol {
     
     typealias ViewModel = GifItemViewModel
     
@@ -42,11 +45,12 @@ extension GifCollectionViewCell: ViewModelBindable {
     }
 }
 
-extension GifCollectionViewCell: SizeCalculatable {
+// MARK: - SizeCalculatableProtocol
+
+extension GifCollectionViewCell: SizeCalculatableProtocol {
     
     static func estimatedSize(from containerSize: CGSize) -> CGSize {
         let width = containerSize.width / 3.0 - (Layout.Space.left + Layout.Space.right)
-        let height = width
-        return CGSize(width: width, height: height)
+        return CGSize(width: width, height: width)
     }
 }

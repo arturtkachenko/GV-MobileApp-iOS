@@ -8,42 +8,60 @@
 
 import UIKit
 
-protocol GifSearchView: View {
+// MARK: - Protocols
+
+protocol GifSearchViewProtocol: ViewProtocol {
     
     func displayRandomGif(_ viewModel: GifItemViewModel)
-    func displayGifSearchResults(_ viewModels: [GifItemViewModel])
+    func displayGifSearchResults(_ viewModel: GifSearchScreenViewModel)
 }
+
+// MARK: - Implementation
 
 final class GifSearchViewController: BaseViewController {
     
     // MARK: - Constants
     
     private enum Layout {
-        static let collectionEdgeInsets = UIEdgeInsets(top: 0.0, left: 16.0, bottom: 0.0, right: 16.0)
         
-        enum Space {
-            static let betweenItems: CGFloat = 8.0
+        enum CollectionView {
+            
+            static let edgeInsets = UIEdgeInsets(top: .zero,
+                                                 left: 16.0,
+                                                 bottom: .zero,
+                                                 right: 16.0)
+            
+            enum Space {
+                
+                static let betweenItems: CGFloat = 8.0
+            }
         }
     }
     
     // MARK: - Properties
     
+    @IBOutlet private weak var collectionView: UICollectionView!
     @IBOutlet private weak var searchBar: UISearchBar!
-    @IBOutlet private weak var statusLabel: UILabel!
     @IBOutlet private weak var gifInfoStackView: UIStackView!
+    
+    @IBOutlet private weak var statusLabel: UILabel!
     @IBOutlet private weak var gifTitleLabel: UILabel!
     @IBOutlet private weak var gifLinkLabel: UILabel!
+    
     @IBOutlet private weak var randomGifImageView: UIImageView!
     @IBOutlet private weak var ageRestrictionImageView: UIImageView!
-    @IBOutlet private weak var collectionView: UICollectionView!
     
-    var interactor: GifSearchInteractor?
-    private var searchResultsViewModels: [GifItemViewModel]?
+    var interactor: GifSearchInteractorProtocol?
+    private var viewModel: GifSearchScreenViewModel?
     
     // MARK: - Lifecycle
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func setupInterface() {
+        super.setupInterface()
+        setupCollectionView()
+        setupSearchBar()
+        configureAppearance(searchStarted: false)
+        
         interactor?.startTimer()
     }
     
@@ -54,25 +72,10 @@ final class GifSearchViewController: BaseViewController {
     
     // MARK: - Setup
     
-    override func setupInterface() {
-        super.setupInterface()
-        setupNavigationBar()
-        setupCollectionView()
-        setupSearchBar()
-        configureAppearance(searchStarted: false)
-    }
-    
-    private func setupNavigationBar() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "",
-                                                           style: .plain,
-                                                           target: nil,
-                                                           action: nil)
-    }
-    
     private func setupCollectionView() {
         collectionView.register(GifCollectionViewCell.nib,
                                 forCellWithReuseIdentifier: GifCollectionViewCell.identifier)
-        collectionView.contentInset = Layout.collectionEdgeInsets
+        collectionView.contentInset = Layout.CollectionView.edgeInsets
         collectionView.isHidden = true
     }
     
@@ -101,25 +104,29 @@ final class GifSearchViewController: BaseViewController {
     }
     
     private func resetCollectionView() {
-        searchResultsViewModels = nil
+        viewModel = nil
         collectionView.reloadData()
     }
 }
 
-extension GifSearchViewController: GifSearchView {
+// MARK: - GifSearchViewProtocol
+
+extension GifSearchViewController: GifSearchViewProtocol {
     
     
     func displayRandomGif(_ viewModel: GifItemViewModel) {
         bind(viewModel: viewModel)
     }
     
-    func displayGifSearchResults(_ viewModels: [GifItemViewModel]) {
-        searchResultsViewModels = viewModels
+    func displayGifSearchResults(_ viewModel: GifSearchScreenViewModel) {
+        self.viewModel = viewModel
         collectionView.reloadData()
     }
 }
 
-extension GifSearchViewController: ViewModelBindable {
+// MARK: - ViewModelBindableProtocol
+
+extension GifSearchViewController: ViewModelBindableProtocol {
     
     typealias ViewModel = GifItemViewModel
     
@@ -172,13 +179,17 @@ extension GifSearchViewController: UISearchBarDelegate {
 extension GifSearchViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return searchResultsViewModels?.count ?? 0
+        viewModel?.items.count ?? .zero
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let item = searchResultsViewModels?[safe: indexPath.row] else { return UICollectionViewCell() }
+        guard let item = viewModel?.items[safe: indexPath.row] else {
+            return UICollectionViewCell()
+        }
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GifCollectionViewCell.identifier, for: indexPath)
         (cell as? GifCollectionViewCell)?.bind(viewModel: item)
+        
         return cell
     }
 }
@@ -188,8 +199,7 @@ extension GifSearchViewController: UICollectionViewDataSource {
 extension GifSearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedViewModel = searchResultsViewModels?[safe: indexPath.row] else { return }
-        interactor?.openGifDetailsModule(selectedViewModel)
+        viewModel?.onSelectActionTriggered(indexPath.row)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -204,18 +214,18 @@ extension GifSearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return GifCollectionViewCell.estimatedSize(from: collectionView.bounds.size)
+        GifCollectionViewCell.estimatedSize(from: collectionView.bounds.size)
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return Layout.Space.betweenItems
+        Layout.CollectionView.Space.betweenItems
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return Layout.Space.betweenItems
+        Layout.CollectionView.Space.betweenItems
     }
 }

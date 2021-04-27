@@ -8,26 +8,36 @@
 
 import Foundation
 
-protocol GifSearchInteractor: Interactor {
+// MARK: - Protocols
+
+protocol GifSearchInteractorProtocol: InteractorProtocol {
     
-    func openGifDetailsModule(_ viewModel: GifItemViewModel)
     func fetchGifs(by searchQuery: String)
     func startTimer()
     func endTimer()
 }
 
-final class GifSearchInteractorImplementation: BaseInteractor {
+// MARK: - Implementation
+
+final class GifSearchInteractor: BaseInteractor {
     
-    private enum Constants {
-        static let timeInterval: TimeInterval = 10
+    // MARK: - Constants
+    
+    private enum Request {
+        
+        static let timeInterval: TimeInterval = 10.0
     }
     
-    private let presenter: GifSearchPresenter
-    private let gifBackendService: GifBackendService
+    // MARK: - Properties
     
-    private var timer = Timer()
-
-    init(presenter: GifSearchPresenter, gifBackendService: GifBackendService) {
+    private let presenter: GifSearchPresenterProtocol
+    private let gifBackendService: GifBackendServiceProtocol
+    
+    private var timer: Timer?
+    
+    // MARK: - Initializers
+    
+    init(presenter: GifSearchPresenterProtocol, gifBackendService: GifBackendServiceProtocol) {
         self.presenter = presenter
         self.gifBackendService = gifBackendService
     }
@@ -36,15 +46,13 @@ final class GifSearchInteractorImplementation: BaseInteractor {
     
     @objc private func fetchRandomGif() {
         gifBackendService.fetchQueue.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.gifBackendService.getRandomGif { randomGif in
+            self?.gifBackendService.getRandomGif { randomGif in
                 switch randomGif {
-                case .success(let model):
+                case let .success(model):
                     DispatchQueue.main.async {
-                        self.presenter.presentRandomGif(model)
+                        self?.presenter.presentRandomGif(model)
                     }
-                case .failure(let error):
+                case let .failure(error):
                     print("Error occured: \(error)")
                 }
             }
@@ -52,11 +60,34 @@ final class GifSearchInteractorImplementation: BaseInteractor {
     }
 }
 
-extension GifSearchInteractorImplementation: GifSearchInteractor {
+// MARK: - GifSearchInteractorProtocol
+
+extension GifSearchInteractor: GifSearchInteractorProtocol {
+    
+    func fetchGifs(by searchQuery: String) {
+        gifBackendService.fetchQueue.async {
+            self.gifBackendService.getGifs(by: searchQuery) { [weak self] searchResults in
+                switch searchResults {
+                case let .success(models):
+                    DispatchQueue.main.async {
+                        let screenModel = GifSearchScreenModel(items: models,
+                                                               onSelectActionTriggered: { index in
+                                                                guard let model = models[safe: index] else { return }
+                                                                let context = GifDetailsContext(model: model)
+                                                                self?.presenter.presentGifDetailsModule(context)
+                                                               })
+                        self?.presenter.presentGifSearchResults(screenModel)
+                    }
+                case let .failure(error):
+                    print("Error occured: \(error)")
+                }
+            }
+        }
+    }
     
     func startTimer() {
         fetchRandomGif()
-        timer = Timer.scheduledTimer(timeInterval: Constants.timeInterval,
+        timer = Timer.scheduledTimer(timeInterval: Request.timeInterval,
                                      target: self,
                                      selector: #selector(fetchRandomGif),
                                      userInfo: nil,
@@ -64,25 +95,6 @@ extension GifSearchInteractorImplementation: GifSearchInteractor {
     }
     
     func endTimer() {
-        timer.invalidate()
-    }
-    
-    func fetchGifs(by searchQuery: String) {
-        gifBackendService.fetchQueue.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.gifBackendService.getGif(by: searchQuery) { searchResults in
-                switch searchResults {
-                case .success(let models):
-                    self.presenter.presentGifSearchResults(models)
-                case .failure(let error):
-                    print("Error occured: \(error)")
-                }
-            }
-        }
-    }
-    
-    func openGifDetailsModule(_ viewModel: GifItemViewModel) {
-        presenter.presentGifDetailsModule(viewModel)
+        timer?.invalidate()
     }
 }

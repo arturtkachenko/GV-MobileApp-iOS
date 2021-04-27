@@ -6,52 +6,46 @@
 //  Copyright © 2020 Artur Tkachenko. All rights reserved.
 //
 
-import Foundation
 import Alamofire
 
-enum ServiceRequest {
-    static let limitItems: Int = 100
-    
-    case random
-    case search
-    
-    var name: String {
-        switch self {
-        case .random:
-            return "random"
-        default:
-            return "search"
-        }
-    }
-}
-
-protocol GifBackendService {
+protocol GifBackendServiceProtocol {
     
     var fetchQueue: DispatchQueue { get }
-    func getRandomGif(_ completion: @escaping (Result<GifItemModel>) -> Void)
-    func getGif(by searchQuery: String, _ completion: @escaping (Result<[GifItemModel]>) -> Void)
+    
+    func getRandomGif(_ completion: @escaping ArgumentedClosure<Result<GifItemModel>>)
+    func getGifs(by searchQuery: String, _ completion: @escaping ArgumentedClosure<Result<[GifItemModel]>>)
 }
 
-final class GifBackendServiceImplementation: GifBackendService {
+final class GifBackendService: GifBackendServiceProtocol {
     
-    private let apiPath: String = "https://api.giphy.com/v1/gifs/"
-    private let apiKey: String = "dc6zaTOxFJmzC"
+    private enum API {
+        
+        static let path = "https://api.giphy.com/v1/gifs/"
+        static let key = "dc6zaTOxFJmzC"
+        
+        enum Request: String {
+            
+            static let limitItems = 100
+            
+            case random
+            case search
+        }
+    }
     
     private(set) var fetchQueue = DispatchQueue(label: "com.GifBackendService.queue", qos: .utility)
     
-    func getRandomGif(_ completion: @escaping (Result<GifItemModel>) -> Void) {
+    func getRandomGif(_ completion: @escaping ArgumentedClosure<Result<GifItemModel>>) {
         DispatchQueue.global(qos: .background).async {
-            
-            guard let url = URL(string: (self.apiPath + ServiceRequest.random.name)) else { return }
-            
-            let parameters: [String: String] = ["api_key": self.apiKey]
+            guard let url = URL(string: (API.path + API.Request.random.rawValue)) else { return }
+            let parameters = ["api_key": API.key]
             
             Alamofire.request(url, parameters: parameters).response { response in
-                
                 guard let data = response.data else { return }
-                
                 do {
-                    let gifData = try JSONDecoder().decode(GifDataModel.self, from: data)
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    
+                    let gifData = try decoder.decode(GifDataModel.self, from: data)
                     completion(.success(gifData.data))
                 } catch let error {
                     completion(.failure(error))
@@ -60,21 +54,20 @@ final class GifBackendServiceImplementation: GifBackendService {
         }
     }
     
-    func getGif(by searchQuery: String, _ completion: @escaping (Result<[GifItemModel]>) -> Void) {
+    func getGifs(by searchQuery: String, _ completion: @escaping ArgumentedClosure<Result<[GifItemModel]>>) {
         DispatchQueue.global(qos: .background).async {
-            
-            guard let url = URL(string: (self.apiPath + ServiceRequest.search.name)) else { return }
-            
-            let parameters: [String: String] = ["api_key": self.apiKey,
-                                                "q": searchQuery,
-                                                "limit": "\(ServiceRequest.limitItems)"]
+            guard let url = URL(string: (API.path + API.Request.search.rawValue)) else { return }
+            let parameters = ["api_key": API.key,
+                              "q": searchQuery,
+                              "limit": "\(API.Request.limitItems)"]
             
             Alamofire.request(url, parameters: parameters).response { response in
-                
                 guard let data = response.data else { return }
-                
                 do {
-                    let gifData = try JSONDecoder().decode(GifSearchDataModel.self, from: data)
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    
+                    let gifData = try decoder.decode(GifSearchDataModel.self, from: data)
                     completion(.success(gifData.data))
                 } catch let error {
                     print("Error occured: \(error)")

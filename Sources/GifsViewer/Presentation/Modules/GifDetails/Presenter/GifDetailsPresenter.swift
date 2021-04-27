@@ -8,23 +8,34 @@
 
 import Foundation
 
-protocol GifDetailsPresenter: Presenter {
-    func presentGifDetails(_ viewModel: GifItemViewModel)
+// MARK: - Protocols
+
+protocol GifDetailsPresenterProtocol: PresenterProtocol {
+    func presentGifDetails(_ model: GifItemModel)
 }
 
-final class GifDetailsPresenterImplementation: BasePresenter {
+// MARK: - Implementation
+
+final class GifDetailsPresenter: BasePresenter {
     
-    private weak var view: GifDetailsView?
+    // MARK: - Properties
     
-    init(router: Router, view: GifDetailsView?) {
+    private weak var view: GifDetailsViewProtocol?
+    
+    // MARK: - Initializers
+    
+    init(router: Router, view: GifDetailsViewProtocol?) {
         super.init(router: router)
         self.view = view
     }
 }
 
-extension GifDetailsPresenterImplementation: GifDetailsPresenter {
+// MARK: - GifDetailsPresenterProtocol
+
+extension GifDetailsPresenter: GifDetailsPresenterProtocol {
     
-    func presentGifDetails(_ viewModel: GifItemViewModel) {
+    func presentGifDetails(_ model: GifItemModel) {
+        let viewModel = GifItemViewModel(model: model)
         view?.displayGifDetails(viewModel)
     }
 }

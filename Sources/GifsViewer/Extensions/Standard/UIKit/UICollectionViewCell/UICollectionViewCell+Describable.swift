@@ -6,6 +6,6 @@
 //  Copyright © 2020 Artur Tkachenko. All rights reserved.
 //
 
-import UIKit
+import UIKit.UICollectionViewCell
 
-extension UICollectionViewCell: Describable { }
+extension UICollectionViewCell: DescribableProtocol {}

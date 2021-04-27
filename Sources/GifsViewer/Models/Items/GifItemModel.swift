@@ -17,6 +17,7 @@ struct GifSearchDataModel: Decodable {
 }
 
 struct GifItemModel: Decodable {
+    
     let title: String
     let rating: String
     let images: GifImageModel
@@ -26,12 +27,6 @@ struct GifImageModel: Decodable {
     
     let fixedWidth: GifOriginalModel
     let fixedWidthStill: GifOriginalModel
-    
-    enum CodingKeys: String, CodingKey {
-
-        case fixedWidth = "fixed_width"
-        case fixedWidthStill = "fixed_width_still"
-    }
 }
 
 struct GifOriginalModel: Decodable {

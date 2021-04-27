@@ -10,12 +10,13 @@ import Foundation
 
 final class GifSearchAssembly: BaseAssembly<GifSearchViewController> {
     
-    override class func createModule(_ viewModel: GifItemViewModel? = nil) -> GifSearchViewController {
+    override class func createModule(_ context: ContextProtocol? = nil) -> GifSearchViewController {
+        super.createModule(context)
         
-        let view = Storyboards.gifSearch.controller as! GifSearchViewController
+        let view = GifSearchViewController.loadFromStoryboard()
         let router = Router(view: view)
-        let presenter = GifSearchPresenterImplementation(router: router, view: view)
-        let interactor = GifSearchInteractorImplementation(presenter: presenter, gifBackendService: GifBackendServiceImplementation())
+        let presenter = GifSearchPresenter(router: router, view: view)
+        let interactor = GifSearchInteractor(presenter: presenter, gifBackendService: GifBackendService())
         view.interactor = interactor
         
         return view

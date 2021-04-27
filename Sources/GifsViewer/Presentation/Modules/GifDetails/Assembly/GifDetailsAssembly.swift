@@ -10,12 +10,13 @@ import Foundation
 
 final class GifDetailsAssembly: BaseAssembly<GifDetailsViewController> {
     
-    override class func createModule(_ viewModel: GifItemViewModel? = nil) -> GifDetailsViewController {
+    override class func createModule(_ context: ContextProtocol? = nil) -> GifDetailsViewController {
+        super.createModule(context)
         
-        let view = Storyboards.gifDetails.controller as! GifDetailsViewController
+        let view = GifDetailsViewController.loadFromStoryboard()
         let router = Router(view: view)
-        let presenter = GifDetailsPresenterImplementation(router: router, view: view)
-        let interactor = GifDetailsInteractorImplementation(presenter: presenter, viewModel: viewModel)
+        let presenter = GifDetailsPresenter(router: router, view: view)
+        let interactor = GifDetailsInteractor(presenter: presenter, context: context as? GifDetailsContext)
         view.interactor = interactor
         
         return view
